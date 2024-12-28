@@ -8,6 +8,7 @@ export const authRouter = router({
     .input(AuthCredentialsValidator)
     .mutation(async ({ input }) => {
       const { email, password } = input;
+      console.log(email, password);
       const payload = await getPayloadClient();
 
       //check if user already exists
@@ -18,15 +19,21 @@ export const authRouter = router({
             equals: email,
           },
         },
-      })
+      });
 
-      if(users.length !== 0) {
-        throw new TRPCError({code: 'CONFLICT'})
+      if (users.length !== 0) {
+        throw new TRPCError({ code: "CONFLICT" });
       }
 
       await payload.create({
         collection: "users",
-        data: {}
-      })
+        data: {
+          email,
+          password,
+          role: "user",
+        },
+      });
+
+      return { success: true, sentToEmail: email };
     }),
 });

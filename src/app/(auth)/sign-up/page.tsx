@@ -19,11 +19,15 @@ const Page = () => {
         resolver: zodResolver(AuthCredentialsValidator)
     })
 
-    // const { data } = trpc.anyApiRoute.useQuery();
-    // console.log(data);
+    const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({
+        onError: (err) => {
+        },
+        onSuccess: ({ sentToEmail }) => {
+        },
+    })
 
     const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
-        /* send data to the server */
+        mutate({ email, password })
     }
 
 
@@ -53,6 +57,7 @@ const Page = () => {
                                             "focus-visible:ring-red-500": errors.email
                                         })}
                                         placeholder="you@example.com"
+                                        type="email"
                                     />
                                 </div>
 
@@ -64,10 +69,11 @@ const Page = () => {
                                             "focus-visible:ring-red-500": errors.password
                                         })}
                                         placeholder="Password"
+                                        type="password"
                                     />
                                 </div>
 
-                                <Button>Sign Up</Button>
+                                <Button type="submit">Sign Up</Button>
                             </div>
                         </form>
                     </div>
